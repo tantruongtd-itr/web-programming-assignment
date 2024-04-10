@@ -23,9 +23,6 @@ $result = mysqli_query($conn, $sql);
 header('Content-type: application/xml');
 $xml = new SimpleXMLElement('<response/>');
 
-$xml->addChild('username', $username);
-$xml->addChild('password', $password);
-
 if(mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     
