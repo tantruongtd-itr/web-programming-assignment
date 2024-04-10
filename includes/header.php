@@ -1,3 +1,15 @@
+<?php
+    session_start();
+    $current_url = $_SERVER['REQUEST_URI'];
+    $page = explode('/', $current_url)[1];
+
+    if (!isset($_SESSION['id'])) {
+        if ($page != 'login.php') {
+            header("Location: login.php");
+            exit;
+        }
+    }
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,6 +34,11 @@
                 <li class="menu-item">
                     <a class="" href="tasks.php">
                         Tasks
+                      </a>
+                </li>
+                <li class="menu-item">
+                    <a class="" href="department.php">
+                        Department
                       </a>
                 </li>
                 <li class="menu-item">
