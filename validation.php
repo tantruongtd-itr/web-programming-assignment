@@ -16,12 +16,15 @@ $data = json_decode($jsonData);
 $username = $data->username;
 $password = $data->password;
 
-$sql = "SELECT id, name, avatar FROM users WHERE username = '%$username' AND password = '%$password'";
+$sql = "SELECT id, name, avatar FROM users WHERE username = '$username' AND password = '$password'";
 $result = mysqli_query($conn, $sql);
 
 
 header('Content-type: application/xml');
 $xml = new SimpleXMLElement('<response/>');
+
+$xml->addChild('username', $username);
+$xml->addChild('password', $password);
 
 if(mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
@@ -34,10 +37,11 @@ if(mysqli_num_rows($result) > 0) {
     $user->addChild('id', $row['id']);
     $user->addChild('name', $row['name']);
     
-    // $_SESSION['user'] = {
-    //     id: $row['id'],
-    //     name: $row['name'],
-    // };
+    $_SESSION['id'] = $row['id'];
+    $_SESSION['user'] = array(
+        'id' => $row['id'],
+        'name' => $row['name']
+    );
 } else {
     // Add the isSuccess and message elements
     $xml->addChild('isSuccess', false);
