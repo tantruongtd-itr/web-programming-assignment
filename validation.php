@@ -16,7 +16,7 @@ $data = json_decode($jsonData);
 $username = $data->username;
 $password = $data->password;
 
-$sql = "SELECT id, name, avatar FROM users WHERE username = '$username' AND password = '$password'";
+$sql = "SELECT id, name FROM users WHERE username = '$username' AND password = '$password'";
 $result = mysqli_query($conn, $sql);
 
 

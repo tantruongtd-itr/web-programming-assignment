@@ -41,3 +41,7 @@ input[type=submit]:hover {
     line-height: 1.75rem;
     text-transform: uppercase;
 }
+
+.hidden {
+  display: none;
+}

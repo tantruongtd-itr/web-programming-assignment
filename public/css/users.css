@@ -63,3 +63,12 @@ form#search-user-form::after {
     clear: both;
     display: table;
 }
+
+#user-list {
+    padding-top: 10px;
+}
+
+#search-user-form {
+    display: flex;
+    flex-direction: row;
+}
