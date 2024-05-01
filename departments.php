@@ -73,10 +73,12 @@ $(document).ready(function() {
         <div class = "page-title">
             <h1>Departments</h1>
         </div>
-        <button id = "add-department-button" class = "add-button">
-            <span>+</span>
-            <span>Add department</span>
-        </button>
+        <?php if (in_array($_SESSION['role'], ['Admin'])): ?>
+            <button id = "add-department-button" class = "add-button">
+                <span>+</span>
+                <span>Add department</span>
+            </button>
+        <?php endif; ?>
     </div>
 
     <div class="container">

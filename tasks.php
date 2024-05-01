@@ -19,57 +19,57 @@ function searchTask(searchQuery) {
         success: function(xmlDoc) {
             console.log(xmlDoc);
             let html = '\n';
-            const users = xmlDoc.querySelectorAll('user');
-            tasks.forEach(user => {
-                const id = user.querySelector('id').textContent;
-                const name = user.querySelector('name').textContent;
-                const email = user.querySelector('email').textContent;
-                const role = user.querySelector('role').textContent;
+            const tasks = xmlDoc.querySelectorAll('task');
+            tasks.forEach(task => {
+                const id = task.querySelector('id').textContent;
+                const name = task.querySelector('name').textContent;
+                const description = task.querySelector('description').textContent;
+                const status = task.querySelector('status').textContent;
+                const reviewStatus = task.querySelector('reviewStatus').textContent;
+                const deadline = task.querySelector('deadline')?.textContent;
+                const createdBy = task.querySelector('createdBy').textContent;
+                const assignedTo = task.querySelector('assignedTo').textContent;
                 
                 html += `
                 <tr>
-                    <th scope="row">${id}</th>
                     <td>${name}</td>
-                    <td>${email}</td>
-                    <td>${role}</td>
+                    <td>${description}</td>
+                    <td>${status || 'In progress'}</td>
+                    <td>${reviewStatus || 'Unreviewed'}</td>
+                    <td>${deadline}</td>
+                    <td>${createdBy}</td>
+                    <td>${assignedTo}</td>
                 </tr>
                 `;
             });
 
             console.log(html);
-            $("#user-list-content").html(html); // Update search results on success
+            $("#task-list-content").html(html); // Update search results on success
         }
     });
 }
 
-    $(document).ready(function() {
-        $("#search-task-form").submit(
-            function(event) {
-                event.preventDefault(); // Prevent default form submission
+$(document).ready(function() {
+    searchTask();
+    $("#search-task-form").submit(
+        function(event) {
+            event.preventDefault(); // Prevent default form submission
 
-                var searchQuery = $("#search_input").val(); // Get the search query
+            var searchQuery = $("#search_input").val(); // Get the search query
 
-                $.ajax({
-                    url: "search-task.php", // URL to send the AJAX request
-                    type: "POST", // HTTP method used
-                    data: { search_input: searchQuery }, // Data to send (search query)
-                    success: function(data) {
-                        // console.log(data)
-                        $("#task-list").html(data); // Update search results on success
-                    }
-                });
-            }
-        );
+            searchTask(searchQuery);
+        }
+    );
 
-        // Get the button element
-        const addButton = document.getElementById("add-task-button");
+    // Get the button element
+    const addButton = document.getElementById("add-task-button");
 
-        // Add click event listener
-        addButton.addEventListener("click", function() {
-            // Navigate to the desired page
-            window.location.href = "add-task.php";
-        });
+    // Add click event listener
+    addButton.addEventListener("click", function() {
+        // Navigate to the desired page
+        window.location.href = "add-task.php";
     });
+});
 
 </script>
 
@@ -79,10 +79,12 @@ function searchTask(searchQuery) {
         <div class = "page-title">
             <h1>Tasks</h1>
         </div>
-        <button id = "add-task-button" class = "add-button" action = "add-task.php">
-            <span>+</span>
-            <span>Assign Task</span>
-        </button>
+        <?php if (in_array($_SESSION['role'], ['Head', 'Director'])): ?>
+            <button id = "add-task-button" class = "add-button" action = "add-task.php">
+                <span>+</span>
+                <span>Assign Task</span>
+            </button>
+        <?php endif; ?>
     </div>
 
     <div class="container">
@@ -92,6 +94,21 @@ function searchTask(searchQuery) {
         </form>
     </div>
     <div id="task-list" class="container">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Progress</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Deadline</th>
+                    <th scope="col">Created by</th>
+                    <th scope="col">Assigned to</th>
+                </tr>
+            </thead>
 
+            <tbody id="task-list-content">
+            </tbody>
+        </table>
     </div>
 </body>

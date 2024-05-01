@@ -26,21 +26,27 @@
     <div class = "bg-dark">
         <div class="container navbar">
             <ul class="main-menu">
-                <li class="menu-item">
-                    <a class="" href="users.php">
-                        Users
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="" href="tasks.php">
-                        Tasks
-                      </a>
-                </li>
-                <li class="menu-item">
-                    <a class="" href="departments.php">
-                        Department
-                      </a>
-                </li>
+                <?php if (in_array($_SESSION['role'], ['Director', 'Admin'])): ?>
+                    <li class="menu-item">
+                        <a class="" href="users.php">
+                            Users
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array($_SESSION['role'], ['Director', 'Admin'])): ?>
+                    <li class="menu-item">
+                        <a class="" href="departments.php">
+                            Department
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array($_SESSION['role'], ['Head', 'Staff', 'Director', 'Admin'])): ?>
+                    <li class="menu-item">
+                        <a class="" href="tasks.php">
+                            Tasks
+                        </a>
+                    </li>   
+                <?php endif; ?>
             </ul>
             <div class="avatar float-right flex-row">
                 <div class=text-wrapper>

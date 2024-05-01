@@ -16,7 +16,7 @@ $data = json_decode($jsonData);
 $username = $data->username;
 $password = $data->password;
 
-$sql = "SELECT id, name FROM users WHERE username = '$username' AND password = '$password'";
+$sql = "SELECT id, name, role FROM users WHERE username = '$username' AND password = '$password'";
 $result = mysqli_query($conn, $sql);
 
 
@@ -35,10 +35,7 @@ if(mysqli_num_rows($result) > 0) {
     $user->addChild('name', $row['name']);
     
     $_SESSION['id'] = $row['id'];
-    $_SESSION['user'] = array(
-        'id' => $row['id'],
-        'name' => $row['name']
-    );
+    $_SESSION['role'] = $row['role'];
 } else {
     // Add the isSuccess and message elements
     $xml->addChild('isSuccess', false);

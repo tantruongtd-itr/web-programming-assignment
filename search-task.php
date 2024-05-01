@@ -1,26 +1,75 @@
 <?php
-// search-task.php
+session_start();
 include_once('./includes/connect_database.php');
-// Database connection and other necessary includes
 
 $search = "";
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
 }
+
+$userId = $_SESSION['id'];
 $sql = "";
-if ($search !== "") {
-    $sql = "SELECT id, name, description, status FROM tasks 
-    WHERE name LIKE '%$search%'
-        OR description LIKE '%$search%'
-    ";
-} else {
-    $sql = "SELECT id, name, description, status FROM tasks";
+if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Staff') {
+    $sql = "SELECT 
+    t.*, 
+    ua.name AS assignedTo,
+    uc.name AS createdBy
+    FROM 
+        tasks AS t
+    LEFT JOIN 
+        users AS ua ON t.assignedTo = ua.id
+    LEFT JOIN 
+        users AS uc ON t.createdBy = uc.id
+    WHERE (t.assignedTo = $userId)";
+
+    if ($search !== "") {
+        $sql = "$sql 
+        AND (t.description LIKE '%$search%' OR t.name LIKE '%$search%')";
+    }
 }
 
-// echo $search;
+if ($_SESSION['role'] == 'Director') {
+    $sql = "SELECT 
+    t.*, 
+    ua.name AS assignedTo,
+    uc.name AS createdBy
+    FROM 
+        tasks AS t
+    LEFT JOIN 
+        users AS ua ON t.assignedTo = ua.id
+    LEFT JOIN 
+        users AS uc ON t.createdBy = uc.id
+    WHERE (t.createdBy = $userId)";
+
+    if ($search !== "") {
+        $sql = "$sql 
+        AND (t.description LIKE '%$search%' OR t.name LIKE '%$search%')";
+    }
+}
+
+if ($_SESSION['role'] == 'Head') {
+    $sql = "SELECT 
+    t.*, 
+    ua.name AS assignedTo,
+    uc.name AS createdBy
+    FROM 
+        tasks AS t
+    LEFT JOIN 
+        users AS ua ON t.assignedTo = ua.id
+    LEFT JOIN 
+        users AS uc ON t.createdBy = uc.id
+    WHERE (t.assignedTo = $userId OR t.createdBy = $userId)";
+
+    if ($search !== "") {
+        $sql = "$sql 
+        AND (t.description LIKE '%$search%' OR t.name LIKE '%$search%')";
+    }
+}
+
+// echo $sql;
+
 
 $result = mysqli_query($conn, $sql);
-
 
 header('Content-type: application/xml');
 $xml = new SimpleXMLElement('<response/>');
@@ -35,6 +84,10 @@ if(mysqli_num_rows($result) > 0) {
         $department->addChild('name', $row['name']);
         $department->addChild('description', $row['description']);
         $department->addChild('status', $row['status']);
+        $department->addChild('reviewStatus', $row['reviewStatus']);
+        $department->addChild('deadline', $row['deadline']);
+        $department->addChild('createdBy', $row['createdBy']);
+        $department->addChild('assignedTo', $row['assignedTo']);
         $row = mysqli_fetch_assoc($result);
     }
 }
