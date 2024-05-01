@@ -14,6 +14,20 @@ if ($search !== "") {
     $sql = "SELECT id, name, email, role FROM users";
 }
 
+if (isset($_GET['role'])) {
+    if ($_GET['role'] == 'Admin') {
+        $sql = "SELECT id, name, email, role FROM users WHERE role = 'Admin'";
+    } else if ($_GET['role'] == 'Head') {
+        $departmentId = $_GET['departmentId'];
+        $sql = "SELECT u.id AS id, u.name AS name, u.email AS email, u.role AS role 
+        FROM users AS u
+        JOIN users_join_departments AS ujd ON ujd.userId = u.id
+        JOIN departments AS d ON ujd.departmentId = d.id
+        WHERE u.role = 'Head'
+            AND d.id = $departmentId";
+    }
+}
+
 // echo $search;
 
 $result = mysqli_query($conn, $sql);

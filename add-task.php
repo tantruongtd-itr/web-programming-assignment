@@ -8,6 +8,135 @@ include_once('includes/header.php');
 
 <link rel = "stylesheet" href = "./public/css/add-task.css">
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+function searchAdmin() {
+  $.ajax({
+    url: "search-user.php?role=Admin", // URL to send the AJAX request
+    type: "GET", // HTTP method used
+    success: function(xmlDoc) {
+      console.log(xmlDoc);
+      let html = '\n';
+      const users = xmlDoc.querySelectorAll('user');
+      users.forEach(user => {
+        const id = user.querySelector('id').textContent;
+        const name = user.querySelector('name').textContent;
+        
+        html += `<option value="${id}">${name}</option>\n`;
+      });
+      
+      const departmentSelect = document.getElementById('assignedTo');
+      departmentSelect.innerHTML = html;
+    }
+  });
+}
+
+function searchHeadByDepartmentId(departmentId) {
+  const url = `search-user.php?role=Head&departmentId=${departmentId}`;
+  $.ajax({
+    url,
+    type: "GET", // HTTP method used
+    success: function(xmlDoc) {
+      let html = '\n';
+      const users = xmlDoc.querySelectorAll('user');
+      users.forEach(user => {
+        const id = user.querySelector('id').textContent;
+        const name = user.querySelector('name').textContent;
+        
+        html += `<option value="${id}">${name}</option>\n`;
+      });
+      
+      const departmentSelect = document.getElementById('assignedTo');
+      departmentSelect.innerHTML = html;
+    }
+  });
+}
+
+function searchDepartment() {
+  const url = "search-department.php";
+  $.ajax({
+    url,
+    type: "GET", // HTTP method used
+    success: function(xmlDoc) {
+      let html = `
+      <option value="none">none</option>
+      `;
+      const departments = xmlDoc.querySelectorAll('department');
+      departments.forEach(department => {
+        const id = department.querySelector('id').textContent;
+        const name = department.querySelector('name').textContent;
+        html += `<option value="${id}">${name}</option>\n`;
+      });
+      
+      const departmentSelect = document.getElementById('department');
+      departmentSelect.innerHTML = html;
+    }
+  });
+}
+
+$(document).ready(function() {
+  searchDepartment();
+  searchAdmin();
+  $("#add-task-form").submit(
+    function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const name = $("#name").val();
+      const description = $("#description").val();
+      const deadline = $("#deadline").val();
+      const department = $("#department").val();
+      const assignedTo = $("#assignedTo").val();
+
+      console.log(name);
+      if (!name || !description || !deadline || !department || !assignedTo) {
+        const element = document.querySelector('.failed-message');
+        element.innerHTML = 'Missing information!';
+        return;
+      }
+
+      // Create a new XMLHttpRequest object
+      $.ajax({
+        url: 'process-add-task.php', // URL to send the AJAX request
+        type: "POST", // HTTP method used
+        data: {
+          name,
+          description,
+          deadline,
+          department,
+          assignedTo,
+        },
+        success: function(xmlDoc) {
+          console.log(xmlDoc);
+          const isSuccess = xmlDoc.querySelectorAll('isSuccess');
+          if (isSuccess) {
+            window.location.href = "tasks.php";
+          } else {
+            const message = xmlDoc.querySelectorAll('message');
+            const element = document.querySelector('.failed-message');
+              element.innerHTML = message;
+            return;
+          }
+        }
+      })
+    }
+  );
+
+  const departmentSelect = document.getElementById('department');
+  departmentSelect.addEventListener('change', function(event) {
+      // Code to execute when the select value changes
+      const selectedValue = event.target.value;
+      console.log('Selected value:', selectedValue);
+      if (selectedValue === 'none') {
+        searchAdmin();
+      } else {
+        console.log('search head')
+        searchHeadByDepartmentId(selectedValue);
+      }
+  });
+});
+</script>
+
 <body>
 
 <div class = "container page-title-container">
@@ -19,25 +148,27 @@ include_once('includes/header.php');
 <div class = "container">
   <form id="add-task-form">
     <label for="name">Name</label>
-    <input type="text" id="name" name="name" placeholder="Your name..">
+    <input type="text" id="name" name="name" placeholder="Task name..">
 
-    <label for="email">Email</label>
-    <input type="text" id="email" name="email" placeholder="Your email..">
+    <label for="description">Description</label>
+    <input type="text" id="description" name="description" placeholder="Task description..">
 
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" placeholder="Username..">
+    <label for="deadline">Deadline</label>
+    <div class="input-wrapper">
+      <input type="date" id="deadline" name="deadline" placeholder="Deadline..">
+    </div>
 
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" placeholder="Password..">
-  
-    <label for="role">role</label>
-    <select id="role" name="role">
+    <label for="department">Department</label>
+    <select id="department" name="department">
       <option value="ADMIN">Administrator</option>
       <option value="Director">Director</option>
-      <option value="Heads">Department heads</option>
-      <option value="Staffs">Staffs</option>
     </select>
   
+    <label for="assignedTo">Assign to</label>
+    <select id="assignedTo" name="assignedTo">
+    </select>
+  
+    <p class="failed-message"></p>
     <input type="submit" value="Submit">
   </form>
 </div>
