@@ -13,7 +13,9 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Staff') {
     $sql = "SELECT 
     t.*, 
     ua.name AS assignedTo,
-    uc.name AS createdBy
+    ua.id AS assignedToId,
+    uc.name AS createdBy,
+    uc.id AS createdById
     FROM 
         tasks AS t
     LEFT JOIN 
@@ -32,7 +34,9 @@ if ($_SESSION['role'] == 'Director') {
     $sql = "SELECT 
     t.*, 
     ua.name AS assignedTo,
-    uc.name AS createdBy
+    ua.id AS assignedToId,
+    uc.name AS createdBy,
+    uc.id AS createdById
     FROM 
         tasks AS t
     LEFT JOIN 
@@ -51,7 +55,9 @@ if ($_SESSION['role'] == 'Head') {
     $sql = "SELECT 
     t.*, 
     ua.name AS assignedTo,
-    uc.name AS createdBy
+    ua.id AS assignedToId,
+    uc.name AS createdBy,
+    uc.id AS createdById
     FROM 
         tasks AS t
     LEFT JOIN 
@@ -87,7 +93,9 @@ if(mysqli_num_rows($result) > 0) {
         $department->addChild('reviewStatus', $row['reviewStatus']);
         $department->addChild('deadline', $row['deadline']);
         $department->addChild('createdBy', $row['createdBy']);
+        $department->addChild('createdById', $row['createdById']);
         $department->addChild('assignedTo', $row['assignedTo']);
+        $department->addChild('assignedToId', $row['assignedToId']);
         $row = mysqli_fetch_assoc($result);
     }
 }

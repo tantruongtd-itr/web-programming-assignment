@@ -9,9 +9,16 @@ if (isset($_GET['search'])) {
 }
 $sql = "";
 if ($search !== "") {
-    $sql = "SELECT id, name, email, role FROM users WHERE name LIKE '%$search%'";
+    $sql = "SELECT u.id AS id, u.name AS name, email, role, d.id AS departmentId
+    FROM users AS u
+    JOIN users_join_departments AS ujd ON ujd.userId = u.id
+    JOIN departments AS d ON ujd.departmentId = d.id
+    WHERE u.name LIKE '%$search%'";
 } else {
-    $sql = "SELECT id, name, email, role FROM users";
+    $sql = "SELECT u.id AS id, u.name AS name, email, role, d.id AS departmentId
+    FROM users AS u
+    JOIN users_join_departments AS ujd ON ujd.userId = u.id
+    JOIN departments AS d ON ujd.departmentId = d.id";
 }
 
 if (isset($_GET['role'])) {
@@ -24,6 +31,14 @@ if (isset($_GET['role'])) {
         JOIN users_join_departments AS ujd ON ujd.userId = u.id
         JOIN departments AS d ON ujd.departmentId = d.id
         WHERE u.role = 'Head'
+            AND d.id = $departmentId";
+    } else if ($_GET['role'] == 'Staff') {
+        $departmentId = $_GET['departmentId'];
+        $sql = "SELECT u.id AS id, u.name AS name, u.email AS email, u.role AS role 
+        FROM users AS u
+        JOIN users_join_departments AS ujd ON ujd.userId = u.id
+        JOIN departments AS d ON ujd.departmentId = d.id
+        WHERE u.role = 'Staff'
             AND d.id = $departmentId";
     }
 }
@@ -46,6 +61,7 @@ if(mysqli_num_rows($result) > 0) {
         $department->addChild('name', $row['name']);
         $department->addChild('email', $row['email']);
         $department->addChild('role', $row['role']);
+        $department->addChild('departmentId', $row['departmentId']);
         $row = mysqli_fetch_assoc($result);
     }
 }

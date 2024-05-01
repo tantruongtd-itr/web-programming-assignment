@@ -33,7 +33,14 @@ function searchAdmin() {
 }
 
 function searchHeadByDepartmentId(departmentId) {
-  const url = `search-user.php?role=Head&departmentId=${departmentId}`;
+  const role = getCookie('role');
+  let url = `search-user.php?role=Head&departmentId=${departmentId}`;
+  if (role === 'Director') {
+    url = `search-user.php?role=Head&departmentId=${departmentId}`;
+  } 
+  if (role === 'Head') {
+    url = `search-user.php?role=Staff&departmentId=${departmentId}`;
+  } 
   $.ajax({
     url,
     type: "GET", // HTTP method used
@@ -53,15 +60,16 @@ function searchHeadByDepartmentId(departmentId) {
   });
 }
 
-function searchDepartment() {
+async function searchDepartment() {
+  const role = getCookie('role');
   const url = "search-department.php";
-  $.ajax({
+  await $.ajax({
     url,
     type: "GET", // HTTP method used
     success: function(xmlDoc) {
-      let html = `
+      let html = role === 'Director' ? `
       <option value="none">none</option>
-      `;
+      ` : ``;
       const departments = xmlDoc.querySelectorAll('department');
       departments.forEach(department => {
         const id = department.querySelector('id').textContent;
@@ -75,9 +83,10 @@ function searchDepartment() {
   });
 }
 
-$(document).ready(function() {
-  searchDepartment();
-  searchAdmin();
+$(document).ready(async function() {
+  // if (document.getElementById('department').value) {
+  //   searchHeadByDepartmentId(document.getElementById('department').value);
+  // }
   $("#add-task-form").submit(
     function(event) {
       event.preventDefault(); // Prevent default form submission
@@ -134,6 +143,12 @@ $(document).ready(function() {
         searchHeadByDepartmentId(selectedValue);
       }
   });
+
+  await searchDepartment();
+  if (document.getElementById('department').value === 'none') {
+    await searchAdmin();
+  }
+  searchHeadByDepartmentId(document.getElementById('department').value);
 });
 </script>
 
@@ -160,8 +175,6 @@ $(document).ready(function() {
 
     <label for="department">Department</label>
     <select id="department" name="department">
-      <option value="ADMIN">Administrator</option>
-      <option value="Director">Director</option>
     </select>
   
     <label for="assignedTo">Assign to</label>

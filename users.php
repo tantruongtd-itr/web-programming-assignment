@@ -10,14 +10,59 @@ include_once('includes/header.php');
 <link rel="stylesheet" href="./public/css/users.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-function searchUser(searchQuery) {
-    const url = searchQuery ? `search-user.php?search=${searchQuery}` : `search-user.php`
-    console.log(url);
-    $.ajax({
+async function getAllDepartments() {
+    const allDepartments = [];
+    const url = 'search-department.php'
+    await $.ajax({
         url, // URL to send the AJAX request
         type: "GET", // HTTP method used
         success: function(xmlDoc) {
             console.log(xmlDoc);
+            let html = '\n';
+            const departments = xmlDoc.querySelectorAll('department');
+            departments.forEach(department => {
+                const id = department.querySelector('id').textContent;
+                const name = department.querySelector('name').textContent;
+                const description = department.querySelector('description').textContent;
+                const head = department.querySelector('head').textContent;
+                
+                allDepartments.push({
+                    id,
+                    name,
+                    description,
+                    head,
+                });
+            });
+        }
+    });
+    return allDepartments;
+}
+
+async function updateUserRole(userId, selectElement) {
+    const role = selectElement.value;
+    console.log("Selected value:", role);
+    await $.ajax({
+        url : `update-user.php?userId=${userId}&&role=${role}`, // URL to send the AJAX request
+        type: "GET", // HTTP method used
+        success: function(xmlDoc) {
+            console.log(xmlDoc);
+        }
+    });
+}
+
+function updateUserDepartment(id, selectElement) {
+    const selectedValue = selectElement.value;
+    console.log("Selected value:", selectedValue);
+}
+
+async function searchUser(searchQuery) {
+    const departments = await getAllDepartments();
+    console.log(departments);
+    const url = searchQuery ? `search-user.php?search=${searchQuery}` : `search-user.php`;
+    $.ajax({
+        url, // URL to send the AJAX request
+        type: "GET", // HTTP method used
+        success: function(xmlDoc) {
             let html = '\n';
             const users = xmlDoc.querySelectorAll('user');
             users.forEach(user => {
@@ -25,18 +70,41 @@ function searchUser(searchQuery) {
                 const name = user.querySelector('name').textContent;
                 const email = user.querySelector('email').textContent;
                 const role = user.querySelector('role').textContent;
+                const departmentId = user.querySelector('departmentId').textContent;
                 
                 html += `
                 <tr>
                     <th scope="row">${id}</th>
                     <td>${name}</td>
                     <td>${email}</td>
-                    <td>${role}</td>
+                    <td>
+                        <select id="role" name="role" onchange="updateUserRole(${id}, this)">
+                            <option value="Admin" ${role === 'Admin' ? 'selected': ''}>Administrator</option>
+                            <option value="Director" ${role === 'Director' ? 'selected': ''}>Director</option>
+                            <option value="Head" ${role === 'Head' ? 'selected' : ''}>Department Head</option>
+                            <option value="Staff" ${role === 'Staff' ? 'selected' : ''}>Staff</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select id="role" name="role" onchange="updateUserDepartment(${id}, this)">
+                `;
+                if (role === "Admin" || role === "Director") {
+                    html += `
+                        <option value="none" selected}>none</option>
+                    `
+                }
+                departments.forEach(department => {
+                    html += `
+                        <option value="${department.id}" ${(departmentId === department.id && role !== "Admin" && role !== "Director" ) ? 'selected': ''}>${department.name}</option>
+                    `
+                });
+                html += `
+                        </select>
+                    </td>
                 </tr>
                 `;
             });
 
-            console.log(html);
             $("#user-list-content").html(html); // Update search results on success
         }
     });
@@ -95,6 +163,7 @@ $(document).ready(function() {
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Role</th>
+                    <th scope="col">Department</th>
                 </tr>
             </thead>
 
