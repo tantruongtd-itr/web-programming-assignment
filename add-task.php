@@ -1,3 +1,7 @@
+<header>
+    <title>Assign task</title>
+</header>
+
 <?php
 include_once('includes/header.php');
 ?>
@@ -8,7 +12,7 @@ include_once('includes/header.php');
 
 <div class = "container page-title-container">
     <div class = "page-title">
-        Add Task
+        <h1>Assign Task</h1>
     </div>
 </div>
 

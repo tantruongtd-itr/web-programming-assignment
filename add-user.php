@@ -1,9 +1,60 @@
+<header>
+    <title>Add user</title>
+</header>
+
 <?php
 include_once('includes/header.php');
 ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+$(document).ready(function() {
+  $("#add-user-form").submit(
+    function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const name = $("#name").val();
+      const email = $("#email").val();
+      const username = $("#username").val();
+      const password = $("#password").val();
+      const role = $("#role").val();
+      const department = $("#department").val();
+
+      console.log(name);
+      if (!name || !email || !username || !password || !role) {
+        const element = document.querySelector('.failed-message');
+        element.innerHTML = 'Missing information!';
+        return;
+      }
+
+      // Create a new XMLHttpRequest object
+      $.ajax({
+        url: 'process-add-user.php', // URL to send the AJAX request
+        type: "POST", // HTTP method used
+        data: {
+          name,
+          email,
+          username,
+          password,
+          role,
+          department: role === 'Admin' ? undefined : department,
+        },
+        success: function(xmlDoc) {
+          console.log(xmlDoc);
+          const isSuccess = xmlDoc.querySelectorAll('isSuccess');
+          if (isSuccess) {
+            window.location.href = "users.php";
+          } else {
+            const message = xmlDoc.querySelectorAll('message');
+            const element = document.querySelector('.failed-message');
+              element.innerHTML = message;
+            return;
+          }
+        }
+      })
+    }
+  );
+});
 
 function addValueForDepartment() {
   $.ajax({
@@ -41,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Code to execute when the select value changes
       const selectedValue = event.target.value;
       console.log('Selected value:', selectedValue);
-      if (selectedValue === 'Head') {
+      if (selectedValue !== 'Admin') {
         addValueForDepartment();
       } else {
         hideDepartmentOption();
@@ -56,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div class = "container page-title-container">
     <div class = "page-title">
-        Add User
+      <h1>Add User</h1>
     </div>
 </div>
 
@@ -88,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </select>
     </div>
   
+    <p class="failed-message"></p>
     <input type="submit" value="Submit">
   </form>
 </div>

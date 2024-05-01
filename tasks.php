@@ -1,3 +1,7 @@
+<header>
+    <title>Task management</title>
+</header>
+
 <?php
 include_once('includes/header.php');
 ?>
@@ -5,6 +9,39 @@ include_once('includes/header.php');
 <link rel="stylesheet" href="./public/css/tasks.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+
+function searchTask(searchQuery) {
+    const url = searchQuery ? `search-task.php?search=${searchQuery}` : `search-task.php`
+    console.log(url);
+    $.ajax({
+        url, // URL to send the AJAX request
+        type: "GET", // HTTP method used
+        success: function(xmlDoc) {
+            console.log(xmlDoc);
+            let html = '\n';
+            const users = xmlDoc.querySelectorAll('user');
+            tasks.forEach(user => {
+                const id = user.querySelector('id').textContent;
+                const name = user.querySelector('name').textContent;
+                const email = user.querySelector('email').textContent;
+                const role = user.querySelector('role').textContent;
+                
+                html += `
+                <tr>
+                    <th scope="row">${id}</th>
+                    <td>${name}</td>
+                    <td>${email}</td>
+                    <td>${role}</td>
+                </tr>
+                `;
+            });
+
+            console.log(html);
+            $("#user-list-content").html(html); // Update search results on success
+        }
+    });
+}
+
     $(document).ready(function() {
         $("#search-task-form").submit(
             function(event) {
@@ -40,11 +77,11 @@ include_once('includes/header.php');
     <!-- The form -->
     <div class = "container page-title-container">
         <div class = "page-title">
-            Tasks
+            <h1>Tasks</h1>
         </div>
         <button id = "add-task-button" class = "add-button" action = "add-task.php">
             <span>+</span>
-            <span>Add Task</span>
+            <span>Assign Task</span>
         </button>
     </div>
 

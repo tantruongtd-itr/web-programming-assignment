@@ -22,14 +22,19 @@
 
 .page-title-container {
     color: black;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 40px;
+    padding-bottom: 40px;
     font-size: 1.25rem;
     font-weight: 500;
     line-height: 1.75rem;
     text-transform: uppercase;
 }
   
+#search-task-form {
+    display: flex;
+    flex-direction: row;
+}
+
   /* Style the search field */
 form#search-task-form input[type=text] {
     padding: 10px;

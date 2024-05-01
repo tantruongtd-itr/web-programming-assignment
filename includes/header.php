@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>assignment</title>
+  <title>Web assignment</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -37,17 +37,17 @@
                       </a>
                 </li>
                 <li class="menu-item">
-                    <a class="" href="department.php">
+                    <a class="" href="departments.php">
                         Department
                       </a>
                 </li>
-                <li class="menu-item">
-                    <a class="" href="login.php">
-                        Login
-                      </a>
-                </li>
             </ul>
-            <div class="avatar float-right">
+            <div class="avatar float-right flex-row">
+                <div class=text-wrapper>
+                    <a class="navbar-brand" href="log-out.php">
+                        Log out
+                    </a>
+                </div>
                 <a class="navbar-brand" href="#">
                   <img src="../images/guest.jpg" alt="Avatar Logo" style="width:40px;" class="rounded-pill"> 
                 </a>
