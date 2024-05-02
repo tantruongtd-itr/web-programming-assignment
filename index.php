@@ -13,6 +13,8 @@
         <?php include_once('./add-department.php'); ?>
     <?php elseif ($_GET['page'] == 'add-task') :?>
         <?php include_once('./add-task.php'); ?>
+    <?php elseif ($_GET['page'] == 'log-out') :?>
+        <?php include_once('./log-out.php'); ?>
     <?php endif; ?>
 <?php elseif (!isset($_GET['page'])) :?>
     <?php
