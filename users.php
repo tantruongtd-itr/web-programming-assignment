@@ -86,7 +86,7 @@ async function searchUser(searchQuery) {
                         </select>
                     </td>
                     <td>
-                        <select id="role" name="role" onchange="updateUserDepartment(${id}, this)">
+                        <select id="department" name="department" onchange="updateUserDepartment(${id}, this)">
                 `;
                 if (role === "Admin" || role === "Director") {
                     html += `
