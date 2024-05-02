@@ -16,9 +16,11 @@ $data = json_decode($jsonData);
 $username = $data->username;
 $password = $data->password;
 
-$sql = "SELECT id, name, role FROM users WHERE username = '$username' AND password = '$password'";
-$result = mysqli_query($conn, $sql);
+// Hashed password retrieved from the database
+$hashed_password = hash('sha256', 'password');
 
+$sql = "SELECT id, name, role FROM users WHERE username = '$username' AND password = '$hashed_password'";
+$result = mysqli_query($conn, $sql);
 
 header('Content-type: application/xml');
 $xml = new SimpleXMLElement('<response/>');

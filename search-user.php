@@ -11,14 +11,14 @@ $sql = "";
 if ($search !== "") {
     $sql = "SELECT u.id AS id, u.name AS name, email, role, d.id AS departmentId
     FROM users AS u
-    JOIN users_join_departments AS ujd ON ujd.userId = u.id
-    JOIN departments AS d ON ujd.departmentId = d.id
+    LEFT JOIN users_join_departments AS ujd ON ujd.userId = u.id
+    LEFT JOIN departments AS d ON ujd.departmentId = d.id
     WHERE u.name LIKE '%$search%'";
 } else {
     $sql = "SELECT u.id AS id, u.name AS name, email, role, d.id AS departmentId
     FROM users AS u
-    JOIN users_join_departments AS ujd ON ujd.userId = u.id
-    JOIN departments AS d ON ujd.departmentId = d.id";
+    LEFT JOIN users_join_departments AS ujd ON ujd.userId = u.id
+    LEFT JOIN departments AS d ON ujd.departmentId = d.id";
 }
 
 if (isset($_GET['role'])) {

@@ -8,10 +8,13 @@ $email = $_POST['email'];
 $username = $_POST['username'];
 $password = $_POST['password'];
 $role = $_POST['role'];
-$sql = "INSERT INTO users (name, email, username, password, role)
-        VALUES ('$name', '$email', '$username', '$password', '$role')";
-mysqli_query($conn, $sql);
 $userId = mysqli_insert_id($conn);
+
+$hashed_password = hash('sha256', 'password');
+
+$sql = "INSERT INTO users (name, email, username, password, role)
+        VALUES ('$name', '$email', '$username', '$hashed_password', '$role')";
+mysqli_query($conn, $sql);
 
 if (isset($_POST['department'])) {
     $department = $_POST['department'];
