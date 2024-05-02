@@ -15,6 +15,8 @@
         <?php include_once('./add-task.php'); ?>
     <?php elseif ($_GET['page'] == 'log-out') :?>
         <?php include_once('./log-out.php'); ?>
+    <?php elseif ($_GET['page'] == 'login') :?>
+        <?php include_once('./login.php'); ?>
     <?php endif; ?>
 <?php elseif (!isset($_GET['page'])) :?>
     <?php

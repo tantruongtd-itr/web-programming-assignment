@@ -4,8 +4,8 @@
     $page = explode('/', $current_url)[1];
 
     if (!isset($_SESSION['id'])) {
-        if ($page != 'login.php') {
-            header("Location: login.php");
+        if ($page != 'index.php?page=login') {
+            header("Location: index.php?page=login");
             exit;
         }
     }

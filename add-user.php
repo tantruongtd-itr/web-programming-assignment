@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Code to execute when the select value changes
       const selectedValue = event.target.value;
       console.log('Selected value:', selectedValue);
-      if (selectedValue !== 'Admin') {
+      if (selectedValue !== 'Admin' && selectedValue !== 'Director') {
         addValueForDepartment();
       } else {
         hideDepartmentOption();

@@ -23,10 +23,14 @@ if ($search !== "") {
 
 if (isset($_GET['role'])) {
     if ($_GET['role'] == 'Admin') {
-        $sql = "SELECT id, name, email, role FROM users WHERE role = 'Admin'";
+        $sql = "SELECT u.id AS id, u.name AS name, u.email AS email, u.role AS role, d.id AS departmentId 
+        FROM users AS u
+        LEFT JOIN users_join_departments AS ujd ON ujd.userId = u.id
+        LEFT JOIN departments AS d ON ujd.departmentId = d.id
+        WHERE u.role = 'Admin'";
     } else if ($_GET['role'] == 'Head') {
         $departmentId = $_GET['departmentId'];
-        $sql = "SELECT u.id AS id, u.name AS name, u.email AS email, u.role AS role 
+        $sql = "SELECT u.id AS id, u.name AS name, u.email AS email, u.role AS role, d.id AS departmentId 
         FROM users AS u
         JOIN users_join_departments AS ujd ON ujd.userId = u.id
         JOIN departments AS d ON ujd.departmentId = d.id
@@ -34,7 +38,7 @@ if (isset($_GET['role'])) {
             AND d.id = $departmentId";
     } else if ($_GET['role'] == 'Staff') {
         $departmentId = $_GET['departmentId'];
-        $sql = "SELECT u.id AS id, u.name AS name, u.email AS email, u.role AS role 
+        $sql = "SELECT u.id AS id, u.name AS name, u.email AS email, u.role AS role, d.id AS departmentId 
         FROM users AS u
         JOIN users_join_departments AS ujd ON ujd.userId = u.id
         JOIN departments AS d ON ujd.departmentId = d.id
@@ -46,7 +50,6 @@ if (isset($_GET['role'])) {
 // echo $search;
 
 $result = mysqli_query($conn, $sql);
-
 
 header('Content-type: application/xml');
 $xml = new SimpleXMLElement('<response/>');

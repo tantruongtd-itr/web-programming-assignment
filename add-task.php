@@ -13,7 +13,7 @@ include_once('includes/header.php');
 
 function searchAdmin() {
   $.ajax({
-    url: "?page=search-user&&role=Admin", // URL to send the AJAX request
+    url: "search-user.php?role=Admin", // URL to send the AJAX request
     type: "GET", // HTTP method used
     success: function(xmlDoc) {
       console.log(xmlDoc);
@@ -67,6 +67,8 @@ async function searchDepartment() {
     url,
     type: "GET", // HTTP method used
     success: function(xmlDoc) {
+      console.log(xmlDoc);
+
       let html = role === 'Director' ? `
       <option value="none">none</option>
       ` : ``;
