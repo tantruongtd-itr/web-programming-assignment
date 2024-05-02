@@ -62,7 +62,7 @@ $(document).ready(function() {
     // Add click event listener
     addButton.addEventListener("click", function() {
         // Navigate to the desired page
-        window.location.href = "add-department.php";
+        window.location.href = "index.php?page=add-department";
     });
 });
 </script>

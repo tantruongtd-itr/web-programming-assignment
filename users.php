@@ -129,7 +129,7 @@ $(document).ready(function() {
     // Add click event listener
     addButton.addEventListener("click", function() {
         // Navigate to the desired page
-        window.location.href = "add-user.php";
+        window.location.href = "index.php?page=add-user";
     });
 });
 </script>

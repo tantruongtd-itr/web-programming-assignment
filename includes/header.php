@@ -28,21 +28,21 @@
             <ul class="main-menu">
                 <?php if (in_array($_SESSION['role'], ['Director', 'Admin'])): ?>
                     <li class="menu-item">
-                        <a class="" href="users.php">
+                        <a class="" href="index.php?page=users">
                             Users
                         </a>
                     </li>
                 <?php endif; ?>
                 <?php if (in_array($_SESSION['role'], ['Director', 'Admin'])): ?>
                     <li class="menu-item">
-                        <a class="" href="departments.php">
+                        <a class="" href="index.php?page=departments">
                             Department
                         </a>
                     </li>
                 <?php endif; ?>
                 <?php if (in_array($_SESSION['role'], ['Head', 'Staff', 'Director', 'Admin'])): ?>
                     <li class="menu-item">
-                        <a class="" href="tasks.php">
+                        <a class="" href="index.php?page=tasks">
                             Tasks
                         </a>
                     </li>   
@@ -50,7 +50,7 @@
             </ul>
             <div class="avatar float-right flex-row">
                 <div class=text-wrapper>
-                    <a class="navbar-brand" href="log-out.php">
+                    <a class="navbar-brand" href="index.php?page=log-out">
                         Log out
                     </a>
                 </div>
